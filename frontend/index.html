@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AETHER CAPITAL | Quantitative Asset Management & Algorithmic Risk Platform</title>
+  <!-- Google Fonts: Outfit & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ================= INSTITUTIONAL LOGIN & SECURITY GATEKEEPER OVERLAY ================= -->
+  <div id="authOverlay" class="auth-overlay active">
+    <div class="auth-card glass-card" id="authCard">
+      <!-- Drag & Move Controls (Upside / Downside) -->
+      <div class="auth-drag-bar" id="authDragHandle" title="Click and drag to move card upside or downside">
+        <div class="drag-grip">
+          <span class="grip-dots">⋮⋮</span>
+          <span class="grip-text">DRAG CARD UPSIDE / DOWNSIDE</span>
+          <span class="grip-dots">⋮⋮</span>
+        </div>
+        <div class="move-quick-btns">
+          <button type="button" class="btn-move-arrow" id="btnMoveUp" title="Move card upside">⬆️ Up</button>
+          <button type="button" class="btn-move-arrow" id="btnMoveDown" title="Move card downside">⬇️ Down</button>
+          <button type="button" class="btn-move-arrow" id="btnResetMove" title="Reset center position">🔄 Center</button>
+        </div>
+      </div>
+
+      <div class="auth-header">
+        <div class="auth-logo-badge">🏛️</div>
+        <h2>AETHER CAPITAL MANAGEMENT</h2>
+        <p class="auth-subtitle">Institutional Quantitative Terminal & Algorithmic Execution Gateway</p>
+      </div>
+
+      <div class="security-shield-badge">
+        <span class="shield-icon">🛡️</span>
+        <div>
+          <div class="shield-title">SEC-COMPLIANT AES-256 GCM SECURE GATEWAY</div>
+          <div class="shield-sub">Air-Gapped Telemetry • Non-Custodial Vault • FINRA Rule 3110 Audited</div>
+        </div>
+      </div>
+
+      <!-- Quick Persona Selector -->
+      <div class="persona-selector">
+        <span class="persona-label">Select Institutional Analyst Clearance:</span>
+        <div class="persona-buttons">
+          <button type="button" class="persona-btn active" id="personaLead">
+            <span>👑</span> Shantanu Kalhapure (Lead Quant)
+          </button>
+          <button type="button" class="persona-btn" id="personaAuditor">
+            <span>🔍</span> Compliance & Risk Auditor
+          </button>
+        </div>
+      </div>
+
+      <div id="authAlert" class="auth-alert" style="display: none;"></div>
+
+      <form id="loginForm" class="auth-form">
+        <div class="form-group">
+          <label for="loginEmail">Institutional Identity (Email)</label>
+          <input type="email" id="loginEmail" value="analyst@aether.fund" placeholder="analyst@aether.fund" required />
+        </div>
+
+        <div class="form-group">
+          <label for="loginPassword">Access Token / Clearance Key</label>
+          <input type="password" id="loginPassword" value="quant2026" placeholder="Enter clearance key..." required />
+        </div>
+
+        <button type="submit" id="btnLoginSubmit" class="btn-auth-primary">
+          <span>🔒</span> Authorize & Launch Quantitative Terminal
+        </button>
+
+        <button type="button" id="btnQuickDemo" class="btn-auth-secondary">
+          <span>⚡</span> Lead Quant Fast Clearance (Instant Demo Access)
+        </button>
+      </form>
+
+      <div class="privacy-notice">
+        <h4>🔒 Institutional Asset & Data Protection Standards:</h4>
+        <ul>
+          <li><strong>Data Isolation:</strong> Quantitative risk models run on air-gapped pipelines with zero external data mining.</li>
+          <li><strong>Air-Gapped Credentials:</strong> High-frequency API secrets reside exclusively in local encrypted environments.</li>
+          <li><strong>Pre-Trade Guardrails:</strong> Deterministic 65% volatility ceiling prevents erroneous trade dispatch.</li>
+          <li><strong>Non-Custodial Assets:</strong> All portfolio assets and order balances are governed locally without counterparty custody risk.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= SECURITY & PRIVACY AUDIT MODAL ================= -->
+  <div id="securityModal" class="modal-overlay">
+    <div class="modal-card glass-card">
+      <div class="modal-header">
+        <div class="modal-title"><span class="icon">🛡️</span> AETHER Capital Asset Security & Privacy Protocol</div>
+        <button id="btnCloseSecurityModal" class="btn-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="sec-grid">
+          <div class="sec-item">
+            <div class="sec-badge">ENCRYPTION</div>
+            <h4>AES-256 GCM & TLS 1.3</h4>
+            <p>All database records and trade executions in <code>data/hedge_fund_audit.sqlite3</code> are stored with local file-level integrity checks. HTTPS/TLS 1.3 enforced for market data feeds.</p>
+          </div>
+          <div class="sec-item">
+            <div class="sec-badge">PRIVACY</div>
+            <h4>Air-Gapped Model Routing</h4>
+            <p>Prompts sent to LangGraph nodes undergo strict Pydantic tokenization. Zero proprietary financial client data is ever stored on or transmitted to external training corpora.</p>
+          </div>
+          <div class="sec-item">
+            <div class="sec-badge">COMPLIANCE</div>
+            <h4>FINRA 3110 & SEC 15c3-5</h4>
+            <p>Every single trade order generated by the Chief Investment Officer (CIO) is cryptographically timestamped with SHA-256 checksums in an immutable audit ledger.</p>
+          </div>
+          <div class="sec-item">
+            <div class="sec-badge">GUARDRAILS</div>
+            <h4>Deterministic Safety Vetoes</h4>
+            <p>The Chief Risk Officer enforces an un-bypassable code gatekeeper: 95% Parametric VaR, inverse-volatility sizing, 65% vol ceiling, and mandatory stop-loss placement.</p>
+          </div>
+        </div>
+
+        <div class="sec-actions-row">
+          <button id="btnRunSecurityHandshake" class="btn-sec-action">
+            <span>⚡</span> Verify Live Cryptographic Handshake
+          </button>
+          <button id="btnDownloadCert" class="btn-sec-action highlight">
+            <span>📥</span> Download Audit Certificate (.json)
+          </button>
+        </div>
+
+        <div id="handshakeResult" class="handshake-box" style="display: none;">
+          <div class="handshake-header">
+            <span class="live-dot green"></span>
+            <strong>Cryptographic Protocol Verification: PASS (SHA-256 Signed)</strong>
+          </div>
+          <pre id="handshakeJson" class="mono"></pre>
+        </div>
+
+        <!-- Inactivity & Anomaly Recovery Controls -->
+        <div class="sec-item timeout-sec-card">
+          <div class="sec-badge">SESSION GOVERNANCE & LOCKOUT PROTOCOL</div>
+          <h4>Inactivity Timeout & Gateway Anomaly Interceptor</h4>
+          <p>The terminal continuously monitors session health and telemetry integrity. Inactivity triggers an automated lockout to safeguard asset positions. Any gateway anomaly, clearance revocation, or 401 error immediately forces the terminal back to the encrypted login gatekeeper.</p>
+          <div class="timeout-ctrl-row">
+            <button id="btnSet30sTimeout" class="btn-ctrl-sub">⏱️ Set 30s Fast Demo Auto-Lock</button>
+            <button id="btnReset5mTimeout" class="btn-ctrl-sub">⏱️ Reset 5m Standard Auto-Lock</button>
+            <button id="btnTriggerModalProblem" class="btn-ctrl-danger">🚨 Trigger Gateway Revocation (HTTP 401)</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= INSTITUTIONAL TRADE ORDER TICKET MODAL ================= -->
+  <div id="orderTicketModal" class="modal-overlay">
+    <div class="modal-card glass-card order-ticket-card">
+      <div class="modal-header">
+        <div class="modal-title"><span class="icon">⚡</span> Institutional Order Execution Ticket</div>
+        <button id="btnCloseOrderModal" class="btn-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="order-form-grid">
+          <!-- Target Security -->
+          <div class="form-group">
+            <label class="form-label">Target Security</label>
+            <div class="ticket-symbol-select">
+              <select id="ticketTicker" class="form-select mono">
+                <option value="NVDA">NVDA — NVIDIA Corp</option>
+                <option value="AAPL">AAPL — Apple Inc</option>
+                <option value="MSFT">MSFT — Microsoft Corp</option>
+                <option value="TSLA">TSLA — Tesla Inc</option>
+                <option value="GOOGL">GOOGL — Alphabet Inc</option>
+              </select>
+              <div class="ticket-quote-badge mono" id="ticketQuoteDisplay">$218.29</div>
+            </div>
+          </div>
+
+          <!-- Order Action -->
+          <div class="form-group">
+            <label class="form-label">Order Action</label>
+            <div class="action-toggle-group">
+              <button type="button" class="btn-action-toggle active buy" id="btnActionBuy" data-action="BUY">BUY / ALLOCATE</button>
+              <button type="button" class="btn-action-toggle sell" id="btnActionSell" data-action="SELL">SELL / REDUCE</button>
+            </div>
+          </div>
+
+          <!-- Allocation Slider & Shares -->
+          <div class="form-group span-2">
+            <div class="label-with-val">
+              <label class="form-label">Portfolio Allocation Weight (% of NAV)</label>
+              <span class="mono text-cyan" id="ticketAllocVal">25.0%</span>
+            </div>
+            <input type="range" id="ticketAllocSlider" min="5" max="45" step="1" value="25" class="range-slider">
+            <div class="slider-ticks mono">
+              <span>5% (Conservative)</span>
+              <span>25% (Standard)</span>
+              <span>35% (FINRA Cap)</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Estimated Dollar Commitment</label>
+            <input type="text" id="ticketDollarEstimate" class="form-input mono" value="$25,000" readonly>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Estimated Shares</label>
+            <input type="number" id="ticketSharesEstimate" class="form-input mono" value="114.5" step="0.1" min="0.1">
+          </div>
+
+          <!-- Risk Boundaries -->
+          <div class="form-group">
+            <label class="form-label">Stop-Loss Threshold ($)</label>
+            <input type="number" id="ticketStopLoss" class="form-input mono" value="196.46" step="0.01">
+            <span class="input-hint text-red mono" id="ticketStopLossPct">-10.0% downside boundary</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Take-Profit Target ($)</label>
+            <input type="number" id="ticketTakeProfit" class="form-input mono" value="251.03" step="0.01">
+            <span class="input-hint text-green mono" id="ticketTakeProfitPct">+15.0% upside target</span>
+          </div>
+        </div>
+
+        <!-- Real-Time Pre-Flight Guardrail Inspector -->
+        <div class="guardrail-inspector-card">
+          <div class="guardrail-inspect-header">
+            <div class="guardrail-status-badge approved" id="guardrailStatusBadge">
+              <span class="badge-icon">🛡️</span> COMPLIANCE: APPROVED
+            </div>
+            <span class="sec-badge mono">FINRA 3110 / SEC 15c3-5 GATEKEEPER</span>
+          </div>
+          <div class="guardrail-checks-list" id="guardrailChecksList">
+            <div class="check-item pass" id="checkConcentration">
+              <span class="icon">✅</span>
+              <span><strong>Concentration Rule:</strong> Allocation complies with 35.0% single-asset risk ceiling.</span>
+            </div>
+            <div class="check-item pass" id="checkLiquidity">
+              <span class="icon">✅</span>
+              <span><strong>Cash Liquidity:</strong> Sufficient unencumbered cash available in the institutional vault.</span>
+            </div>
+            <div class="check-item pass" id="checkRegime">
+              <span class="icon">✅</span>
+              <span><strong>Macro Sizing:</strong> Active market regime permits unconstrained inverse-volatility sizing.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Order Receipt Card -->
+        <div id="orderExecutionFeedback" class="order-receipt-card" style="display:none;"></div>
+
+        <div class="modal-actions-row">
+          <button id="btnSubmitTicketOrder" class="btn-primary-action">
+            <span>⚡</span> Transmit Cryptographic Order
+          </button>
+          <button id="btnCancelTicketOrder" class="btn-cancel-action">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Top Ticker Tape Marquee -->
+  <div class="ticker-tape">
+    <div class="tape-track">
+      <div class="tape-item"><span class="ticker">SPY</span> <span class="price">$584.20</span> <span class="change up">+0.82%</span></div>
+      <div class="tape-item"><span class="ticker">QQQ</span> <span class="price">$492.15</span> <span class="change up">+1.14%</span></div>
+      <div class="tape-item"><span class="ticker">NVDA</span> <span class="price">$150.00</span> <span class="change up">+2.45%</span></div>
+      <div class="tape-item"><span class="ticker">AAPL</span> <span class="price">$332.27</span> <span class="change down">-0.42%</span></div>
+      <div class="tape-item"><span class="ticker">MSFT</span> <span class="price">$448.90</span> <span class="change up">+0.65%</span></div>
+      <div class="tape-item"><span class="ticker">TSLA</span> <span class="price">$238.10</span> <span class="change down">-1.80%</span></div>
+      <div class="tape-item"><span class="ticker">BTC/USD</span> <span class="price">$89,450</span> <span class="change up">+3.12%</span></div>
+      <!-- Duplicate for seamless loop -->
+      <div class="tape-item"><span class="ticker">SPY</span> <span class="price">$584.20</span> <span class="change up">+0.82%</span></div>
+      <div class="tape-item"><span class="ticker">QQQ</span> <span class="price">$492.15</span> <span class="change up">+1.14%</span></div>
+      <div class="tape-item"><span class="ticker">NVDA</span> <span class="price">$150.00</span> <span class="change up">+2.45%</span></div>
+      <div class="tape-item"><span class="ticker">AAPL</span> <span class="price">$332.27</span> <span class="change down">-0.42%</span></div>
+    </div>
+  </div>
+
+  <!-- Header Navigation -->
+  <header class="header">
+    <div class="brand">
+      <div class="logo-badge">🏛️</div>
+      <div>
+        <h1 class="brand-title">AETHER CAPITAL MANAGEMENT</h1>
+        <p class="brand-subtitle">Systematic Multi-Factor Alpha Generation & Quantitative Execution Terminal</p>
+      </div>
+    </div>
+    
+    <div class="header-status">
+      <div class="status-pill"><span class="live-dot"></span> MARKET ONLINE</div>
+      <div class="status-pill sec-timer" id="sessionTimerBadge" title="Session auto-locks on inactivity"><span class="mono" id="sessionTimerVal">05:00</span> AUTO-LOCK</div>
+      <div class="status-pill latency"><span class="mono">14ms</span> FEED LATENCY</div>
+      
+      <!-- User Profile Badge -->
+      <div class="user-profile-badge" id="userProfileBadge" title="Click to sign out or switch clearance">
+        <span class="avatar-dot"></span>
+        <span id="userNameDisplay" class="user-name">Shantanu Kalhapure (Lead Quant)</span>
+        <span class="role-tag" id="userRoleDisplay">CRO Authority</span>
+      </div>
+
+      <button class="btn-sec-policy" id="btnOpenSecurityModal">🛡️ Security & Privacy</button>
+      <button class="btn-sec-policy highlight-dossier" id="btnExportDossier" title="Export complete multi-factor investment committee audit dossier">📥 Export Audit Dossier</button>
+      <button class="btn-paper-trade" id="btnConnectOrder" title="Open institutional trade order execution ticket">⚡ Trade Order Ticket</button>
+      <button class="btn-sec-problem" id="btnSimulateProblem" title="Test session revocation or network problem kickout">🚨 Test Invalidation</button>
+      <button class="btn-back-login" id="btnBackToLogin" title="Sign out and return to institutional login screen">🚪 Back to Login</button>
+      <button class="btn-lock" id="btnLockTerminal" title="Lock Session">🔒 Lock</button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="main-container">
+    <!-- Privacy & Asset Security Protocol Ribbon -->
+    <section class="security-ribbon glass-card">
+      <div class="ribbon-item">
+        <span class="ribbon-icon">🔒</span>
+        <div class="ribbon-text">
+          <span class="ribbon-title">ASSET CUSTODY</span>
+          <span class="ribbon-val">Non-Custodial Local Vault ($100k Capital Ledger)</span>
+        </div>
+      </div>
+      <div class="ribbon-divider"></div>
+      <div class="ribbon-item">
+        <span class="ribbon-icon">🛡️</span>
+        <div class="ribbon-text">
+          <span class="ribbon-title">PRIVACY SAFEGUARD</span>
+          <span class="ribbon-val">Air-Gapped Telemetry • Zero External Model Storage</span>
+        </div>
+      </div>
+      <div class="ribbon-divider"></div>
+      <div class="ribbon-item">
+        <span class="ribbon-icon">📜</span>
+        <div class="ribbon-text">
+          <span class="ribbon-title">REGULATORY AUDIT</span>
+          <span class="ribbon-val">FINRA 3110 SHA-256 Signed Execution Ledger</span>
+        </div>
+      </div>
+      <div class="ribbon-divider"></div>
+      <div class="ribbon-item">
+        <span class="ribbon-icon">⚡</span>
+        <div class="ribbon-text">
+          <span class="ribbon-title">PRE-TRADE SAFETY</span>
+          <span class="ribbon-val">Deterministic 65% Vol Ceiling & Stop-Loss Guardrails</span>
+        </div>
+      </div>
+      <button id="btnRibbonInspect" class="btn-ribbon-inspect">
+        <span>🛡️</span> Security Proof
+      </button>
+    </section>
+
+    <!-- Search & Asset Control Panel -->
+    <section class="control-panel glass-card">
+      <div class="search-section">
+        <label for="tickerInput" class="input-label">Select Target Equity or Multi-Asset Basket</label>
+        <div class="search-box">
+          <input type="text" id="tickerInput" value="NVDA" placeholder="Enter Ticker (e.g. NVDA, AAPL, TSLA, MSFT)..." autocomplete="off" />
+          <button id="btnConvene" class="btn-primary">
+            <span class="btn-icon">⚡</span> Convene Investment Committee
+          </button>
+        </div>
+        <div class="quick-chips">
+          <span class="chip-label">Select Security:</span>
+          <button class="chip active" data-symbol="NVDA">NVDA (Semiconductors & Compute)</button>
+          <button class="chip" data-symbol="AAPL">AAPL (Hardware Moat & Ecosystem)</button>
+          <button class="chip" data-symbol="MSFT">MSFT (Enterprise Cloud Infrastructure)</button>
+          <button class="chip" data-symbol="TSLA">TSLA (Autonomous Mobility & Energy)</button>
+          <button class="chip" data-symbol="GOOGL">GOOGL (Alphabet / Search Platforms)</button>
+        </div>
+      </div>
+
+      <div class="macro-regime-card">
+        <div class="regime-header">
+          <span class="regime-tag">MACRO REGIME CLASSIFICATION</span>
+          <span class="regime-badge" id="macroRegimeBadge">LOW_VOL_BULL</span>
+        </div>
+        <div class="regime-stat">
+          <span class="regime-num mono" id="macroVol">10.4%</span>
+          <span class="regime-desc">S&P 500 Realized Annualized Volatility</span>
+        </div>
+        <p class="regime-guidance" id="macroGuidance">Favorable macroeconomic regime permits systematic trend allocation with inverse-volatility sizing.</p>
+      </div>
+    </section>
+
+    <!-- Real-Time KPI Row -->
+    <section class="kpi-grid">
+      <div class="kpi-card glass-card">
+        <div class="kpi-label">CIO FINAL DIRECTIVE</div>
+        <div class="kpi-value-lg buy-glow" id="cioAction">BUY</div>
+        <div class="kpi-sub" id="cioConviction">Model Conviction: 82%</div>
+      </div>
+
+      <div class="kpi-card glass-card">
+        <div class="kpi-label">TARGET CAPITAL WEIGHT</div>
+        <div class="kpi-value-lg mono text-cyan" id="targetAllocation">25.0%</div>
+        <div class="kpi-sub">Risk-Parity Optimization</div>
+      </div>
+
+      <div class="kpi-card glass-card">
+        <div class="kpi-label">CURRENT ASSET PRICE</div>
+        <div class="kpi-value-lg mono" id="assetPrice">$150.00</div>
+        <div class="kpi-sub text-green" id="priceChange">+1.01% (Trend: UPTREND)</div>
+      </div>
+
+      <div class="kpi-card glass-card">
+        <div class="kpi-label">1-DAY 95% VALUE-AT-RISK</div>
+        <div class="kpi-value-lg mono text-amber" id="varRisk">2.95%</div>
+        <div class="kpi-sub text-green" id="riskStatus">✅ Risk Audit Approved</div>
+      </div>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="terminal-nav">
+      <button class="nav-tab active" data-tab="debate">🏛️ Investment Committee Review</button>
+      <button class="nav-tab" data-tab="pnl">💹 Live Portfolio P&amp;L</button>
+      <button class="nav-tab" data-tab="portfolio">📊 MPT &amp; Black-Litterman</button>
+      <button class="nav-tab" data-tab="montecarlo">🎲 2,000-Path Monte Carlo</button>
+      <button class="nav-tab" data-tab="valuation">💎 DCF &amp; Graham Valuation</button>
+      <button class="nav-tab" data-tab="backtest">🧪 Walk-Forward Backtest</button>
+      <button class="nav-tab" data-tab="matrix">🌐 Multi-Asset Quant Matrix</button>
+    </nav>
+
+    <!-- TAB 1: Multi-Agent Debate Arena -->
+    <section id="tab-debate" class="tab-content active">
+      <div class="debate-layout">
+        <!-- Iconic Investor Personas Grid -->
+        <div class="personas-grid">
+          <div class="persona-card glass-card buffett">
+            <div class="persona-header">
+              <div class="avatar">👴</div>
+              <div>
+                <div class="name">Warren Buffett</div>
+                <div class="role">Economic Moat & Capital Allocation</div>
+              </div>
+            </div>
+            <div class="persona-quote" id="buffettQuote">
+              "We evaluate the durability of the enterprise castle and the depth of its protective moat. Paying an exorbitant multiple leaves no adequate Margin of Safety."
+            </div>
+          </div>
+
+          <div class="persona-card glass-card cathie">
+            <div class="persona-header">
+              <div class="avatar">🚀</div>
+              <div>
+                <div class="name">Cathie Wood</div>
+                <div class="role">Exponential Innovation (ARK)</div>
+              </div>
+            </div>
+            <div class="persona-quote" id="cathieQuote">
+              "Market participants routinely misprice disruptive innovation. Accelerated adoption along cost-decline curves provides multi-trillion dollar TAM expansion."
+            </div>
+          </div>
+
+          <div class="persona-card glass-card graham">
+            <div class="persona-header">
+              <div class="avatar">⚖️</div>
+              <div>
+                <div class="name">Benjamin Graham</div>
+                <div class="role">Defensive Value & Balance Sheet</div>
+              </div>
+            </div>
+            <div class="persona-quote" id="grahamQuote">
+              "An investment operation is one which, upon thorough analysis, promises safety of principal and an adequate return. Operations not meeting these requirements are speculative."
+            </div>
+          </div>
+
+          <div class="persona-card glass-card simons">
+            <div class="persona-header">
+              <div class="avatar">🧮</div>
+              <div>
+                <div class="name">Jim Simons</div>
+                <div class="role">Renaissance Quantitative Signals</div>
+              </div>
+            </div>
+            <div class="persona-quote" id="simonsQuote">
+              "Statistical anomaly detected in 50-day momentum channel. Volatility clustering remains within bounded drift expectations. Favorable Sharpe expectancy."
+            </div>
+          </div>
+        </div>
+
+        <!-- Adversarial Bull vs Bear Dialectic Transcript -->
+        <div class="debate-stream glass-card">
+          <div class="stream-header">
+            <h3>⚔️ Dialectic Convergence Transcript (Round-by-Round)</h3>
+            <span class="badge-status">LangGraph Directed Cycle</span>
+          </div>
+
+          <div class="debate-messages" id="debateMessages">
+            <div class="message-bubble bull">
+              <div class="bubble-header"><span class="tag">🟢 Bull Strategist (Round 1)</span> <span class="time mono">12:15:02</span></div>
+              <p>Conviction Long on target asset: Momentum structure confirms primary uptrend with sustained support above 50-day moving average. Growth catalysts comfortably outweigh near-term cyclical resistance.</p>
+            </div>
+
+            <div class="message-bubble bear">
+              <div class="bubble-header"><span class="tag">🔴 Bear Forensic Skeptic (Round 1)</span> <span class="time mono">12:15:03</span></div>
+              <p>Downside vulnerability flag: Valuation multiples reside at upper standard deviation percentiles. If macroeconomic liquidity contracts, downside skew is asymmetric. Multiple compression risk is unhedged.</p>
+            </div>
+
+            <div class="message-bubble cro">
+              <div class="bubble-header"><span class="tag">🛡️ Chief Risk Officer (CRO)</span> <span class="time mono">12:15:04</span></div>
+              <p>Risk Gatekeeper Mandate: Annualized volatility is 28.5%. 1-Day 95% Parametric VaR is 2.95%. No veto triggered. Applying risk-parity inverse volatility position sizing ceiling at 25.0%.</p>
+            </div>
+
+            <div class="message-bubble cio">
+              <div class="bubble-header"><span class="tag">🎯 Chief Investment Officer (CIO Resolution)</span> <span class="time mono">12:15:05</span></div>
+              <p id="cioMemoText">"Constructive bullish alignment. Technical trend is UPTREND with Price above SMA-50. Risk bounds respected. Executing BUY order at target allocation."</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: Live Portfolio P&L Dashboard -->
+    <section id="tab-pnl" class="tab-content">
+      <div class="pnl-layout">
+
+        <!-- Equity Curve Chart -->
+        <div class="glass-card pnl-curve-card">
+          <div class="chart-header">
+            <h3>📈 Live Portfolio Equity Curve — AETHER Strategy vs. S&amp;P 500</h3>
+            <div class="chart-legend-row">
+              <span class="legend-dot green"></span><span>AETHER Strategy</span>
+              <span class="legend-dot cyan" style="margin-left:18px"></span><span>S&amp;P 500 Benchmark</span>
+              <span class="legend-dot red-fill" style="margin-left:18px"></span><span>Max Drawdown Zone</span>
+            </div>
+          </div>
+          <div class="canvas-container">
+            <canvas id="pnlCanvas" width="880" height="320"></canvas>
+          </div>
+        </div>
+
+        <!-- Performance KPI Grid -->
+        <div class="pnl-kpi-grid">
+          <div class="glass-card pnl-kpi-card">
+            <div class="pnl-kpi-label">PORTFOLIO NAV</div>
+            <div class="pnl-kpi-value text-green mono" id="pnlNavValue">$104,820</div>
+            <div class="pnl-kpi-sub text-green" id="pnlNavChange">+4.82% (+$4,820)</div>
+          </div>
+          <div class="glass-card pnl-kpi-card">
+            <div class="pnl-kpi-label">ANNUALIZED SHARPE</div>
+            <div class="pnl-kpi-value text-cyan mono" id="pnlSharpe">1.74</div>
+            <div class="pnl-kpi-sub">Risk-Adjusted Alpha</div>
+          </div>
+          <div class="glass-card pnl-kpi-card">
+            <div class="pnl-kpi-label">SORTINO RATIO</div>
+            <div class="pnl-kpi-value text-cyan mono" id="pnlSortino">2.11</div>
+            <div class="pnl-kpi-sub">Downside Deviation</div>
+          </div>
+          <div class="glass-card pnl-kpi-card">
+            <div class="pnl-kpi-label">CVaR-95 (EXPECTED SHORTFALL)</div>
+            <div class="pnl-kpi-value text-amber mono" id="pnlCvar">3.82%</div>
+            <div class="pnl-kpi-sub">Tail Risk Beyond VaR</div>
+          </div>
+          <div class="glass-card pnl-kpi-card">
+            <div class="pnl-kpi-label">MAX DRAWDOWN</div>
+            <div class="pnl-kpi-value text-red mono" id="pnlMaxDD">-8.4%</div>
+            <div class="pnl-kpi-sub">Peak-to-Trough</div>
+          </div>
+          <div class="glass-card pnl-kpi-card">
+            <div class="pnl-kpi-label">REGIME SCALAR</div>
+            <div class="pnl-kpi-value text-green mono" id="pnlRegimeScalar">1.00×</div>
+            <div class="pnl-kpi-sub" id="pnlRegimeBadge">LOW_VOL_BULL</div>
+          </div>
+        </div>
+
+        <!-- Holdings Table -->
+        <div class="glass-card pnl-holdings-card">
+          <div class="holdings-header-row">
+            <h3>📋 Live Holdings — Paper Portfolio Vault Positions</h3>
+            <div class="holdings-controls">
+              <button id="btnToggleLiveTicks" class="btn-ctrl-tick active" title="Toggle stochastic live market tick engine"><span class="pulse-beacon"></span> LIVE TICKS: ON</button>
+              <button id="btnResetPortfolioVault" class="btn-ctrl-sub" title="Reset paper vault to $100k seed capital">🔄 Reset Vault</button>
+              <button id="btnOpenOrderModalDirect" class="btn-primary-action small">⚡ Transmit Order</button>
+            </div>
+          </div>
+          <table class="holdings-table" id="holdingsTable">
+            <thead>
+              <tr>
+                <th>TICKER</th>
+                <th>SHARES</th>
+                <th>AVG COST</th>
+                <th>CURRENT PRICE</th>
+                <th>POSITION VALUE</th>
+                <th>UNREALIZED P&amp;L</th>
+                <th>WEIGHT</th>
+                <th>REGIME ACTION</th>
+              </tr>
+            </thead>
+            <tbody id="holdingsBody">
+              <tr>
+                <td class="mono text-cyan">NVDA</td>
+                <td class="mono">22</td>
+                <td class="mono">$198.40</td>
+                <td class="mono">$218.29</td>
+                <td class="mono">$4,802</td>
+                <td class="mono text-green">+$437.78 (+10.0%)</td>
+                <td class="mono">25.0%</td>
+                <td><span class="regime-action-badge bull">BUY</span></td>
+              </tr>
+              <tr>
+                <td class="mono text-cyan">AAPL</td>
+                <td class="mono">9</td>
+                <td class="mono">$310.00</td>
+                <td class="mono">$332.27</td>
+                <td class="mono">$2,990</td>
+                <td class="mono text-green">+$200.43 (+7.2%)</td>
+                <td class="mono">35.0%</td>
+                <td><span class="regime-action-badge bull">BUY</span></td>
+              </tr>
+              <tr>
+                <td class="mono text-cyan">MSFT</td>
+                <td class="mono">6</td>
+                <td class="mono">$478.00</td>
+                <td class="mono">$495.63</td>
+                <td class="mono">$2,974</td>
+                <td class="mono text-green">+$105.78 (+3.7%)</td>
+                <td class="mono">30.0%</td>
+                <td><span class="regime-action-badge hold">HOLD</span></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="holdings-footer">
+            <span class="mono">Total Invested: <strong>$10,766</strong></span>
+            <span class="mono" style="margin-left: 24px;">Cash Remaining: <strong id="cashBalance">$89,234</strong></span>
+            <span class="mono" style="margin-left: 24px;">Total P&amp;L: <strong class="text-green" id="totalPnl">+$744.00 (+6.9%)</strong></span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TAB 3: MPT & Black-Litterman Portfolio Optimization -->
+    <section id="tab-portfolio" class="tab-content">
+      <div class="portfolio-layout">
+        <div class="glass-card port-chart-card">
+          <h3>Asset Allocation Breakdown (Markowitz vs. Black-Litterman)</h3>
+          <div class="weights-bars" id="weightsBars"></div>
+        </div>
+
+        <div class="glass-card port-stats-card">
+          <h3>Portfolio Mathematical Optimality</h3>
+          <div class="stat-row"><span>Optimal Sharpe Ratio:</span> <span class="mono text-green" id="portSharpe">1.63</span></div>
+          <div class="stat-row"><span>Expected Annual Return:</span> <span class="mono text-cyan" id="portReturn">36.4%</span></div>
+          <div class="stat-row"><span>Portfolio Volatility:</span> <span class="mono text-amber" id="portVol">19.8%</span></div>
+          <div class="stat-row"><span>Optimization Model:</span> <span class="mono">SLSQP Quadratic</span></div>
+          <div class="stat-row"><span>Equilibrium Tilt:</span> <span class="mono">AI Agent Conviction</span></div>
+          <div class="divider"></div>
+          <p class="small-text">Black-Litterman model integrates institutional market capitalization equilibrium with qualitative multi-agent sentiment views to generate optimal unconstrained weights.</p>
+          <button id="btnExecuteRebalance" class="btn-rebalance-action">
+            <span>⚡</span> Execute Optimal Black-Litterman Rebalance
+          </button>
+          <div id="rebalanceStatus" class="rebalance-status-box" style="display:none;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: 2,000-Path Monte Carlo Stochastic Simulation -->
+    <section id="tab-montecarlo" class="tab-content">
+      <div class="monte-carlo-layout">
+        <div class="glass-card mc-canvas-card">
+          <div class="chart-header">
+            <h3>Geometric Brownian Motion (GBM) 60-Day Forward Fan Chart</h3>
+            <span class="badge-status">2,000 Simulations</span>
+          </div>
+          <div class="canvas-container">
+            <canvas id="mcCanvas" width="800" height="380"></canvas>
+          </div>
+        </div>
+
+        <div class="glass-card mc-stats-card">
+          <h3>Stochastic Probability Metrics</h3>
+          <div class="mc-metric">
+            <span class="label">60-Day Median Price</span>
+            <span class="val mono text-cyan" id="mcMedian">$152.19</span>
+          </div>
+          <div class="mc-metric">
+            <span class="label">95% Worst-Case (P5 Tail Risk)</span>
+            <span class="val mono text-red" id="mcP5">$120.83</span>
+          </div>
+          <div class="mc-metric">
+            <span class="label">95% Best-Case (P95 Upside)</span>
+            <span class="val mono text-green" id="mcP95">$192.63</span>
+          </div>
+          <div class="mc-metric">
+            <span class="label">Probability of Profit</span>
+            <span class="val mono text-green" id="mcProbWin">54.4%</span>
+          </div>
+          <div class="mc-metric">
+            <span class="label">Stop-Loss Breach Probability</span>
+            <span class="val mono text-amber" id="mcProbStop">45.5%</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: Fundamental DCF Valuation -->
+    <section id="tab-valuation" class="tab-content">
+      <div class="dcf-grid">
+        <div class="glass-card dcf-card">
+          <div class="card-title">5-Year Discounted Cash Flow (DCF)</div>
+          <div class="dcf-val mono text-cyan" id="dcfVal">$219.61</div>
+          <div class="dcf-mos" id="dcfMos">Margin of Safety: +12.4%</div>
+          <p class="small-text">Calculated via Gordon Growth Model assuming 9.0% WACC discount rate and 3.0% terminal growth.</p>
+        </div>
+
+        <div class="glass-card dcf-card">
+          <div class="card-title">Benjamin Graham Intrinsic Number</div>
+          <div class="dcf-val mono text-amber" id="grahamVal">$65.40</div>
+          <div class="dcf-mos">Asset Backing Benchmark</div>
+          <p class="small-text">Formula: &radic;(22.5 &times; EPS &times; Book Value Per Share). Strict conservative asset liquidation benchmark.</p>
+        </div>
+
+        <div class="glass-card dcf-card">
+          <div class="card-title">Valuation Multiples Overview</div>
+          <div class="stat-row"><span>Trailing P/E:</span> <span class="mono" id="peRatio">27.6x</span></div>
+          <div class="stat-row"><span>Debt-to-Equity:</span> <span class="mono" id="deRatio">45.2</span></div>
+          <div class="stat-row"><span>Operating Margin:</span> <span class="mono text-green" id="opMargin">54.8%</span></div>
+          <div class="stat-row"><span>Revenue CAGR:</span> <span class="mono text-green" id="revGrowth">14.8%</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: Event-Driven Backtesting -->
+    <section id="tab-backtest" class="tab-content">
+      <div class="backtest-layout">
+        <div class="glass-card bt-chart-card">
+          <h3>Walk-Forward Equity Curve (1-Year Zero Lookahead)</h3>
+          <div class="canvas-container">
+            <canvas id="btCanvas" width="800" height="340"></canvas>
+          </div>
+        </div>
+
+        <div class="glass-card bt-stats-card">
+          <h3>Quantitative Performance vs. S&P 500</h3>
+          <div class="stat-row"><span>Strategy Return:</span> <span class="mono text-green" id="btStratRet">+24.35%</span></div>
+          <div class="stat-row"><span>Buy & Hold Benchmark:</span> <span class="mono text-cyan" id="btBenchRet">+23.05%</span></div>
+          <div class="stat-row"><span>Annualized Sharpe:</span> <span class="mono text-green" id="btSharpe">1.48</span></div>
+          <div class="stat-row"><span>Sortino Ratio:</span> <span class="mono text-green" id="btSortino">1.62</span></div>
+          <div class="stat-row"><span>Maximum Drawdown:</span> <span class="mono text-red" id="btMaxDD">-12.4%</span></div>
+          <div class="stat-row"><span>Modeled Slippage:</span> <span class="mono">5 bps / trade</span></div>
+    </section>
+
+    <!-- TAB 7: Multi-Asset Quantitative Intelligence Matrix -->
+    <section id="tab-matrix" class="tab-content">
+      <div class="glass-card matrix-container-card">
+        <div class="matrix-header">
+          <div>
+            <h3>🌐 Multi-Asset Quantitative Intelligence Matrix</h3>
+            <p class="matrix-subtitle">Cross-sectional multi-factor risk, valuation, momentum & consensus rankings across universe assets</p>
+          </div>
+          <div class="matrix-actions">
+            <span class="badge-live-pulse"><span class="pulse-beacon"></span> CONSOLIDATED QUANT ENGINE</span>
+          </div>
+        </div>
+
+        <div class="matrix-table-wrap">
+          <table class="matrix-table" id="crossAssetMatrixTable">
+            <thead>
+              <tr>
+                <th>SECURITY</th>
+                <th>SECTOR &amp; THEME</th>
+                <th>PRICE</th>
+                <th>24H CHG</th>
+                <th>REALIZED VOL</th>
+                <th>1Y SHARPE</th>
+                <th>DCF INTRINSIC</th>
+                <th>MARGIN OF SAFETY</th>
+                <th>RSI-14</th>
+                <th>CIO DIRECTIVE</th>
+                <th>CONVICTION</th>
+                <th>ACTION</th>
+              </tr>
+            </thead>
+            <tbody id="crossAssetMatrixBody">
+              <!-- Dynamically populated rows for NVDA, AAPL, MSFT, TSLA, GOOGL -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Institutional Professional Footer -->
+  <footer class="terminal-footer">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <div class="footer-brand">🏛️ AETHER CAPITAL MANAGEMENT LLC</div>
+        <p class="footer-text">Quantitative Research, Risk-Parity Portfolio Optimization & Algorithmic Trading Systems.</p>
+        <div class="footer-engineer">Chief Systems Architect: <strong>Shantanu Kalhapure</strong> • Quantitative Finance & Data Engineering</div>
+      </div>
+      <div class="footer-col">
+        <div class="footer-heading">SYSTEM TELEMETRY</div>
+        <ul class="footer-links">
+          <li>Exchange Feed: <span class="mono text-green">Online (14ms Consolidated Tape)</span></li>
+          <li>Engine Architecture: <span class="mono">Production v4.2.1</span></li>
+          <li>Regulatory Audit Standard: <span class="mono">FINRA 3110 / SEC 15c3-5</span></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <div class="footer-heading">INSTITUTIONAL REGULATORY NOTICE</div>
+        <p class="footer-disclaimer">Proprietary algorithmic research and execution terminal for qualified institutional investors. All simulated executions feature deterministic pre-trade risk validation with strict volatility and stop-loss limits. Past performance is not indicative of future returns.</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 AETHER Capital Management LLC. All rights reserved. Confidential & Proprietary.</span>
+      <div class="footer-actions">
+        <button id="btnFooterBackLogin" class="btn-footer-link">🚪 Back to Login Screen</button>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

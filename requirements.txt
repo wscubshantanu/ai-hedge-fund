@@ -1,0 +1,28 @@
+# Core Multi-Agent & LLM Dependencies
+langgraph>=0.2.0
+langchain-core>=0.3.0
+langchain-openai>=0.2.0
+openai>=1.30.0
+
+# Financial Data & Quantitative Modeling
+yfinance>=0.2.38
+pandas>=2.2.0
+numpy>=1.26.0
+scipy>=1.12.0
+statsmodels>=0.14.0
+
+# Schema & Data Validation
+pydantic>=2.7.0
+pydantic-settings>=2.2.0
+python-dotenv>=1.0.1
+
+# API & Dashboard
+fastapi>=0.111.0
+uvicorn>=0.29.0
+streamlit>=1.35.0
+plotly>=5.22.0
+requests>=2.31.0
+
+# Testing & Quality
+pytest>=8.1.0
+ruff>=0.4.0

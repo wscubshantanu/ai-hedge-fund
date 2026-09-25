@@ -1,0 +1,28 @@
+{
+  "cash": 100000.0,
+  "positions": {
+    "NVDA": {
+      "shares": 22.0,
+      "entry_price": 198.4,
+      "current_price": 218.29,
+      "action": "BUY",
+      "regime": "LOW_VOL_BULL"
+    },
+    "AAPL": {
+      "shares": 9.0,
+      "entry_price": 310.0,
+      "current_price": 332.27,
+      "action": "BUY",
+      "regime": "LOW_VOL_BULL"
+    },
+    "MSFT": {
+      "shares": 6.0,
+      "entry_price": 478.0,
+      "current_price": 495.63,
+      "action": "HOLD",
+      "regime": "RANGEBOUND_CHOP"
+    }
+  },
+  "realized_pnl": 0.0,
+  "trades_history": []
+}

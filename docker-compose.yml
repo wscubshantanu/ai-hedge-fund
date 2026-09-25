@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  ai-hedge-fund:
+    build: .
+    container_name: ai_hedge_fund_app
+    ports:
+      - "8000:8000"   # FastAPI Backend
+      - "8501:8501"   # Streamlit Terminal
+    env_file:
+      - .env
+    restart: unless-stopped

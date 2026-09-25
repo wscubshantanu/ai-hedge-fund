@@ -1,0 +1,105 @@
+{
+  "ticker": "NVDA",
+  "timestamp": "2026-09-12T12:13:53.077971",
+  "execution_duration_sec": 3.03,
+  "fundamental_valuation": {
+    "ticker": "NVDA",
+    "current_price": 218.29,
+    "trailing_pe": 27.63,
+    "forward_pe": 14.02,
+    "peg_ratio": 0.55,
+    "price_to_book": 23.02,
+    "profit_margins": 63.66,
+    "revenue_growth": 105.9,
+    "debt_to_equity": 16.97,
+    "dcf_intrinsic_value": 73.24,
+    "margin_of_safety_pct": -66.45,
+    "graham_number": 41.06,
+    "is_undervalued_dcf": false
+  },
+  "news_sentiment": {
+    "ticker": "NVDA",
+    "aggregate_sentiment_score": -0.17,
+    "overall_tone": "BEARISH",
+    "news_count": 6,
+    "top_headlines": [
+      {
+        "title": "SpaceX signs $1.1 billion-per month computing deal",
+        "sentiment_score": 0.0
+      },
+      {
+        "title": "Nvidia CEO Jensen Huang just doubled down on his big 2030 prediction",
+        "sentiment_score": 0.0
+      },
+      {
+        "title": "Why Did Billionaire Israel \"Izzy\" Englander More Than Double His Stake in AbbVie Stock and Start a Position in SpaceX Stock?",
+        "sentiment_score": 0.0
+      },
+      {
+        "title": "Michael Burry Is Staying Short Nvidia, Palantir, and Tesla, Warning of a Possible \"1987-Type Fall\" for AI Stocks. Should Investors Take the Bet Seriously?",
+        "sentiment_score": -1.0
+      },
+      {
+        "title": "3 Ways to Invest in Anthropic Pre-IPO",
+        "sentiment_score": 0.0
+      },
+      {
+        "title": "Why Power Integrations (POWI) Stock Is Trading Up Today",
+        "sentiment_score": 0.0
+      }
+    ]
+  },
+  "technical_analysis": {
+    "current_price": 150.0,
+    "previous_close": 148.5,
+    "change_pct": 1.01,
+    "sma_20": 149.0,
+    "sma_50": 145.0,
+    "sma_200": 135.0,
+    "rsi_14": 56.4,
+    "macd": 1.25,
+    "macd_signal": 0.95,
+    "macd_hist": 0.3,
+    "bb_upper": 155.0,
+    "bb_mid": 149.0,
+    "bb_lower": 143.0,
+    "atr_14": 3.2,
+    "annualized_volatility": 0.285,
+    "52w_high": 170.0,
+    "52w_low": 120.0,
+    "trend": "UPTREND",
+    "is_overbought": false,
+    "is_oversold": false,
+    "_warning": "Used simulated data due to: 'BB_Mid'"
+  },
+  "risk_assessment": {
+    "ticker": "NVDA",
+    "is_vetoed": false,
+    "max_position_size_pct": 0.25,
+    "var_95": 2.95,
+    "var_99": 4.18,
+    "risk_rating": "MODERATE",
+    "risk_summary": "ACCEPTABLE: Normal market regime. Daily 95% VaR is 2.95%. Suggested max weight: 25.0%.",
+    "suggested_stop_loss": 143.36,
+    "suggested_take_profit": 163.28
+  },
+  "final_trade_order": {
+    "ticker": "NVDA",
+    "action": "BUY",
+    "target_allocation_pct": 0.25,
+    "confidence": 0.82,
+    "stop_loss_price": 143.36,
+    "take_profit_price": 163.28,
+    "executive_thesis": "Constructive bullish alignment. Technical trend is UPTREND with Price above SMA-50. Risk bounds respected.",
+    "bull_bear_consensus": "Debate concluded after 2 rounds. Risk gatekeeper applied."
+  },
+  "backtest_performance": {
+    "strategy_return_pct": -21.63,
+    "benchmark_return_pct": 23.05,
+    "excess_alpha_pct": -44.69,
+    "sharpe_ratio": -1.28,
+    "sortino_ratio": -1.33,
+    "max_drawdown_pct": -25.66,
+    "total_trades": 12
+  }
+}
